@@ -46,8 +46,8 @@ public class ControllerConstant {
     public static final String AREA_FILTER = "areaFilter";
 
     // start index
-    public static final String START_INDEX_DESC = "The 0-based index of the first query result";
-    public static final String START_INDEX = "startIndex";
+    public static final String PAGE_INDEX_DESC = "The 1-based index of pages";
+    public static final String PAGE_INDEX = "pageIndex";
 
     public static final String PAGE_SIZE_DESC = "Specifies the desired maximum number of query results per page";
     public static final String PAGE_SIZE = "pageSize";

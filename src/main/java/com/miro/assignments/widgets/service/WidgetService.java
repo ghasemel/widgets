@@ -1,8 +1,8 @@
 package com.miro.assignments.widgets.service;
 
+import com.miro.assignments.widgets.dto.ListWidgetDto;
 import com.miro.assignments.widgets.dto.WidgetDto;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface WidgetService {
@@ -14,5 +14,5 @@ public interface WidgetService {
 
     void deleteById(UUID id);
 
-    List<WidgetDto> getList(String areaFilter, Integer pageSize, Integer startIndex);
+    ListWidgetDto getList(String areaFilter, Integer pageSize, Integer startIndex);
 }

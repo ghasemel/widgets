@@ -1,5 +1,6 @@
 package com.miro.assignments.widgets.controller;
 
+import com.miro.assignments.widgets.dto.ListWidgetDto;
 import com.miro.assignments.widgets.dto.WidgetDto;
 import com.miro.assignments.widgets.service.WidgetService;
 import io.swagger.annotations.*;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 
 import static com.miro.assignments.widgets.constant.ControllerConstant.*;
@@ -80,7 +80,7 @@ public class WidgetController {
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = API_OPERATION_DELETE_WIDGET_MESSAGE_OK),
             @ApiResponse(code = 400, message = API_OPERATION_DELETE_WIDGET_MESSAGE_ERROR)})
-    @PutMapping(path = "/{" + ID_PATH_VAR +  "}", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
+    @DeleteMapping(path = "/{" + ID_PATH_VAR +  "}", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
     public ResponseEntity<HttpStatus> delete(@PathVariable(ID_PATH_VAR) UUID id) {
 
         log.info("delete request for widget: {}", id);
@@ -97,17 +97,17 @@ public class WidgetController {
             @ApiResponse(code = 200, message = API_OPERATION_GET_LIST_WIDGET_MESSAGE_OK),
             @ApiResponse(code = 404, message = API_OPERATION_GET_LIST_WIDGET_MESSAGE_ERROR)})
     @GetMapping(produces = APPLICATION_JSON)
-    public ResponseEntity<List<WidgetDto>> getWidgetsList(
-            @ApiParam(value = AREA_FILTER)
+    public ResponseEntity<ListWidgetDto> getWidgetsList(
+            @ApiParam(value = AREA_FILTER_DESC)
             @RequestParam(value = AREA_FILTER, required = false) String areaFilter,
-            @ApiParam(value = START_INDEX_DESC)
-            @RequestParam(value = START_INDEX, required = false) Integer startIndex,
+            @ApiParam(value = PAGE_INDEX_DESC)
+            @RequestParam(value = PAGE_INDEX, required = false) Integer pageIndex,
             @ApiParam(value = PAGE_SIZE_DESC)
             @RequestParam(value = PAGE_SIZE, required = false) Integer pageSize) {
         log.debug("get request for widget list, areaFilter: {}, startIndex: {}, pageSize: {}",
-                areaFilter, startIndex, pageSize);
+                areaFilter, pageIndex, pageSize);
 
-        List<WidgetDto> widgetList = widgetService.getList(areaFilter, pageSize, startIndex);
+        ListWidgetDto widgetList = widgetService.getList(areaFilter, pageSize, pageIndex);
 
         return new ResponseEntity<>(widgetList, HttpStatus.OK);
     }

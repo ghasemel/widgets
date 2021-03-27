@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by Ghasem on 27/03/2021
@@ -75,24 +76,36 @@ public class InMemoryRepository implements WidgetRepository {
                 .anyMatch(w -> w.getValue().getZ() == z);
     }
 
+    @Override
     public List<Widget> getWidgetsWithZGreaterThanOrEqual(final int z) {
-        List<Map.Entry<UUID, Widget>> greaterThanList =
-                board.entrySet().stream()
-                        .filter(w -> w.getValue().getZ() >= z)
-                        .sorted((o1, o2) -> o1.getValue().getZ() > o2.getValue().getZ() ? 1 : 0)
-                        .collect(Collectors.toList());
+        // extract z indexes greater than or equal to z
+        List<Widget> greaterThanList =
+                board.values().stream()
+                .filter(widget -> widget.getZ() >= z)
+                .sorted(Comparator.comparingInt(Widget::getZ))
+                .collect(Collectors.toList());
 
 
-        List<Widget> selectedList = new ArrayList<>();
-
-        // select widgets with z-index in a row
+        // select widgets with z-indexes in a row
         // e.g.: 4,5,6,8,9 -> selected: 4,5,6
+        List<Widget> selectedList = new ArrayList<>();
         for (int i = 0; i < greaterThanList.size(); i++) {
-            Widget widget = greaterThanList.get(i).getValue();
-            if (widget.getZ() - z - i <= 1)
+            Widget widget = greaterThanList.get(i);
+            if (widget.getZ() - z - i <= 1) // was in a row
                 selectedList.add(widget);
         }
-
         return selectedList;
+    }
+
+    @Override
+    public List<Widget> findAll(int pageSize, int pageIndex) {
+        if (pageIndex * pageSize >= board.size())
+            return Collections.emptyList();
+
+        List<Widget> widgetList = board.values().stream()
+                .sorted(Comparator.comparingInt(Widget::getZ))
+                .collect(Collectors.toList());
+
+        return widgetList.subList(pageIndex * pageSize, Math.min(pageSize * (pageIndex + 1), widgetList.size()));
     }
 }

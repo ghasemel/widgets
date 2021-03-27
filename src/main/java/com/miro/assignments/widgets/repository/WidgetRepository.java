@@ -20,4 +20,6 @@ public interface WidgetRepository {
     boolean isZExist(int z);
 
     List<Widget> getWidgetsWithZGreaterThanOrEqual(final int z);
+
+    List<Widget> findAll(int pageSize, int startIndex);
 }

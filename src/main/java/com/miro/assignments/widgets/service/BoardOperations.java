@@ -118,4 +118,16 @@ public class BoardOperations {
             readLock.unlock();
         }
     }
+
+    public List<Widget> allWidget(int pageSize, int pageIndex) {
+        Lock readLock = lock.readLock();
+        try {
+            readLock.lock();
+
+            // retrieve
+            return repository.findAll(pageSize, pageIndex - 1);
+        } finally {
+            readLock.unlock();
+        }
+    }
 }
