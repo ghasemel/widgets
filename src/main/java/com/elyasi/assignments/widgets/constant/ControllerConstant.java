@@ -1,19 +1,21 @@
 package com.elyasi.assignments.widgets.constant;
 
+import org.springframework.http.MediaType;
+
 /**
  * Created by Ghasem on 27/03/2021
  */
 public class ControllerConstant {
     private ControllerConstant() { }
 
-    public static final String WIDGET_API_VERSION = "1";
+    public static final String WIDGET_API_VERSION_1 = "1";
     public static final String WIDGET_ENDPOINT = "/widget";
 
-    public static final String APPLICATION_JSON = "application/json";
+    public static final String APPLICATION_JSON = MediaType.APPLICATION_JSON_VALUE;
 
     // get widget by id
     public static final String API_OPERATION_GET_WIDGET_BY_ID = "Retrieve widget by id";
-    public static final String API_OPERATION_GET_WIDGET_BY_ID_LINK = "https://sampleLinkToDocumentation/widget/v" + WIDGET_API_VERSION;
+    public static final String API_OPERATION_GET_WIDGET_BY_ID_LINK = "https://sampleLinkToDocumentation/widget/v" + WIDGET_API_VERSION_1;
     public static final String API_OPERATION_FOUND_WIDGET_BY_ID_MESSAGE_OK = "Requested widget has been founded and retrieved";
     public static final String API_OPERATION_FOUND_WIDGET_BY_ID_MESSAGE_NOT_FOUND = "Requested widget not found";
 

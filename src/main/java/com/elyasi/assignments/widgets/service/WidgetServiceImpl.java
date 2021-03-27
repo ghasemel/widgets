@@ -99,7 +99,7 @@ public class WidgetServiceImpl implements WidgetService {
 
         // if z-index is null
         if (widgetDto.getZ() == null) {
-            widget = boardOperations.updateWidgetWithNoZIndex(widget);
+            widget = boardOperations.updateWidgetWithoutZIndex(widget);
         } else {
             widget = boardOperations.updateWidgetWithZIndex(widget);
         }
@@ -118,10 +118,8 @@ public class WidgetServiceImpl implements WidgetService {
         if (id == null)
             throw new InvalidValueException(WidgetDto.ID_NAME, GlobalConstant.NULL_VALUE);
 
-        // retrieve widget
-        boolean deleteResult = boardOperations.deleteWidget(id);
-        if (deleteResult)
-            throw new WidgetNotFoundException(id);
+        // delete widget
+        boardOperations.deleteWidget(id);
 
         log.debug("deleteById(): widget {} has been deleted", id);
     }

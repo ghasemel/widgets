@@ -33,5 +33,5 @@ public class WidgetDto implements Serializable {
     @Positive(message = "height should be greater than zero")
     private int height;
 
-    public static final String ID_NAME = "widget id";
+    public static final String ID_NAME = "id";
 }

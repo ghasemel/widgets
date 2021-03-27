@@ -40,9 +40,12 @@ public class InMemoryRepository implements WidgetRepository {
     }
 
     @Override
+    public boolean existsById(UUID id) {
+        return board.containsKey(id);
+    }
+
+    @Override
     public Widget update(Widget widget) {
-        //Optional<Widget> widgetOptional = findById(widget.getId());
-        //if (widgetOptional.isPresent()) {
         board.remove(widget.getId());
         board.put(widget.getId(), widget);
 
@@ -51,18 +54,11 @@ public class InMemoryRepository implements WidgetRepository {
             maxZIndex = widget.getZ();
 
         return widget;
-        //}
-        //return widgetOptional;
     }
 
     @Override
-    public boolean delete(UUID id) {
-        Optional<Widget> widgetOptional = findById(id);
-        if (widgetOptional.isPresent()) {
-            board.remove(id);
-            return true;
-        }
-        return false;
+    public void delete(UUID id) {
+        board.remove(id);
     }
 
     @Override
@@ -81,13 +77,12 @@ public class InMemoryRepository implements WidgetRepository {
         // extract z indexes greater than or equal to z
         List<Widget> greaterThanList =
                 board.values().stream()
-                .filter(widget -> widget.getZ() >= z)
-                .sorted(Comparator.comparingInt(Widget::getZ))
-                .collect(Collectors.toList());
+                        .filter(widget -> widget.getZ() >= z)
+                        .sorted(Comparator.comparingInt(Widget::getZ))
+                        .collect(Collectors.toList());
 
         return extractByZInRow(z, greaterThanList);
     }
-
 
 
     @Override
@@ -115,4 +110,4 @@ public class InMemoryRepository implements WidgetRepository {
         return widgetList.subList(pageIndex * pageSize, Math.min(pageSize * (pageIndex + 1), widgetList.size()));
     }
 
- }
+}

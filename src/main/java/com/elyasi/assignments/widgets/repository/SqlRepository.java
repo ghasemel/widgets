@@ -34,14 +34,18 @@ public class SqlRepository implements WidgetRepository {
     }
 
     @Override
+    public boolean existsById(UUID id) {
+        return h2Repository.existsById(id);
+    }
+
+    @Override
     public Widget update(Widget widget) {
         return h2Repository.save(widget);
     }
 
     @Override
-    public boolean delete(UUID id) {
+    public void delete(UUID id) {
         h2Repository.deleteById(id);
-        return true;
     }
 
     @Override

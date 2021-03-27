@@ -11,7 +11,9 @@ import java.lang.annotation.*;
         validatedBy = {AreaValidator.class}
 )
 public @interface Area {
-    String message() default "Invalid area format - acceptable format: X1:Y1,X2:Y2";
+    static final String MSG = "Invalid area format - acceptable format: X1:Y1,X2:Y2";
+
+    String message() default MSG;
 
     Class<?>[] groups() default {};
 

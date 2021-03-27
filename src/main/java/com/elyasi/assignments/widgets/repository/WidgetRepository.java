@@ -15,7 +15,9 @@ public interface WidgetRepository {
 
     Widget update(Widget widget);
 
-    boolean delete(UUID id);
+    void delete(UUID id);
+
+    boolean existsById(UUID id);
 
     int getMaxZ();
 

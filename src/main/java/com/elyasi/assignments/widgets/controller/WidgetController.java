@@ -20,7 +20,7 @@ import static com.elyasi.assignments.widgets.constant.ControllerConstant.*;
 /**
  * Created by Ghasem on 27/03/2021
  */
-@Api(value = WIDGET_API_VERSION)
+@Api(value = WIDGET_API_VERSION_1)
 @Slf4j
 @RestController
 @RequestMapping(WIDGET_ENDPOINT)
@@ -83,7 +83,7 @@ public class WidgetController {
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = API_OPERATION_DELETE_WIDGET_MESSAGE_OK),
             @ApiResponse(code = 400, message = API_OPERATION_DELETE_WIDGET_MESSAGE_ERROR)})
-    @DeleteMapping(path = "/{" + ID_PATH_VAR +  "}", consumes = APPLICATION_JSON, produces = APPLICATION_JSON)
+    @DeleteMapping(path = "/{" + ID_PATH_VAR +  "}", produces = APPLICATION_JSON)
     public ResponseEntity<HttpStatus> delete(@PathVariable(ID_PATH_VAR) UUID id) {
 
         log.info("delete request for widget: {}", id);

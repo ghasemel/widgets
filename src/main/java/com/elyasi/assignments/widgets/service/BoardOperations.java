@@ -1,6 +1,7 @@
 package com.elyasi.assignments.widgets.service;
 
 import com.elyasi.assignments.widgets.domain.Area;
+import com.elyasi.assignments.widgets.exception.defined.WidgetNotFoundException;
 import com.elyasi.assignments.widgets.repository.WidgetRepository;
 import com.elyasi.assignments.widgets.domain.Widget;
 import lombok.RequiredArgsConstructor;
@@ -66,10 +67,13 @@ public class BoardOperations {
         }
     }
 
-    public Widget updateWidgetWithNoZIndex(Widget widget) {
+    public Widget updateWidgetWithoutZIndex(Widget widget) {
         Lock writeLock = lock.writeLock();
         try {
             writeLock.lock();
+
+            if (!repository.existsById(widget.getId()))
+                throw new WidgetNotFoundException(widget.getId());
 
             // retrieve max-z
             widget.setZ(repository.getMaxZ());
@@ -85,6 +89,10 @@ public class BoardOperations {
         Lock writeLock = lock.writeLock();
         try {
             writeLock.lock();
+
+            if (!repository.existsById(widget.getId()))
+                throw new WidgetNotFoundException(widget.getId());
+
             doZShiftIfNeeded(widget);
 
             // insert widget
@@ -108,15 +116,18 @@ public class BoardOperations {
         }
     }
 
-    public boolean deleteWidget(UUID id) {
-        Lock readLock = lock.readLock();
+    public void deleteWidget(UUID id) {
+        Lock writeLock = lock.writeLock();
         try {
-            readLock.lock();
+            writeLock.lock();
+
+            if (!repository.existsById(id))
+                throw new WidgetNotFoundException(id);
 
             // retrieve
-            return repository.delete(id);
+            repository.delete(id);
         } finally {
-            readLock.unlock();
+            writeLock.unlock();
         }
     }
 
