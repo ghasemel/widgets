@@ -1,4 +1,6 @@
-# Widgets - Miro
+# Widgets
+A web service to work with widgets via HTTP REST API. The service stores only widgets,
+assuming that all clients work with the same board.
 
 ### Health check
 [http://localhost:8080/miro/actuator/health](http://localhost:8080/miro/actuator/health)
