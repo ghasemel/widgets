@@ -3,26 +3,31 @@ package com.miro.assignments.widgets.controller;
 import com.miro.assignments.widgets.dto.ListWidgetDto;
 import com.miro.assignments.widgets.dto.WidgetDto;
 import com.miro.assignments.widgets.service.WidgetService;
+import com.miro.assignments.widgets.validator.Area;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Positive;
 import java.util.UUID;
 
 import static com.miro.assignments.widgets.constant.ControllerConstant.*;
 
 /**
- * Created by taaelgh1 on 27/03/2021
+ * Created by Ghasem on 27/03/2021
  */
 @Api(value = WIDGET_API_VERSION)
 @Slf4j
 @RestController
 @RequestMapping(WIDGET_ENDPOINT)
 @RequiredArgsConstructor
+@Validated
 public class WidgetController {
     private final WidgetService widgetService;
 
@@ -99,12 +104,12 @@ public class WidgetController {
     @GetMapping(produces = APPLICATION_JSON)
     public ResponseEntity<ListWidgetDto> getWidgetsList(
             @ApiParam(value = AREA_FILTER_DESC)
-            @RequestParam(value = AREA_FILTER, required = false) String areaFilter,
+            @RequestParam(value = AREA_FILTER, required = false) @Area String areaFilter,
             @ApiParam(value = PAGE_INDEX_DESC)
             @RequestParam(value = PAGE_INDEX, required = false) Integer pageIndex,
             @ApiParam(value = PAGE_SIZE_DESC)
             @RequestParam(value = PAGE_SIZE, required = false) Integer pageSize) {
-        log.debug("get request for widget list, areaFilter: {}, startIndex: {}, pageSize: {}",
+        log.info("get request for widget list, areaFilter: {}, startIndex: {}, pageSize: {}",
                 areaFilter, pageIndex, pageSize);
 
         ListWidgetDto widgetList = widgetService.getList(areaFilter, pageSize, pageIndex);

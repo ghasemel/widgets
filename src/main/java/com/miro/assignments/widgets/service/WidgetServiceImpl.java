@@ -2,6 +2,7 @@ package com.miro.assignments.widgets.service;
 
 import com.miro.assignments.widgets.config.Config;
 import com.miro.assignments.widgets.constant.GlobalConstant;
+import com.miro.assignments.widgets.converter.StringToAreaConverter;
 import com.miro.assignments.widgets.converter.WidgetDtoToWidgetConverter;
 import com.miro.assignments.widgets.converter.WidgetToWidgetDtoConverter;
 import com.miro.assignments.widgets.domain.Widget;
@@ -14,6 +15,7 @@ import com.miro.assignments.widgets.exception.defined.WidgetNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +30,7 @@ import java.util.UUID;
 public class WidgetServiceImpl implements WidgetService {
     private final WidgetToWidgetDtoConverter toWidgetDtoConverter;
     private final WidgetDtoToWidgetConverter toWidgetConverter;
+    private final StringToAreaConverter toAreaConverter;
     private final BoardOperations boardOperations;
     private final Config config;
 
@@ -135,8 +138,14 @@ public class WidgetServiceImpl implements WidgetService {
             pageIndex = 1;
         }
 
-        List<Widget> widgets = boardOperations.allWidget(pageSize, pageIndex);
-
+        List<Widget> widgets;
+        if (ObjectUtils.isEmpty(areaFilter)) {
+            // retrieve all
+            widgets = boardOperations.allWidget(pageSize, pageIndex);
+        } else {
+            // retrieve by filter
+            widgets = boardOperations.allWidgetInArea(toAreaConverter.convert(areaFilter), pageSize, pageIndex);
+        }
 
         if (widgets == null || widgets.isEmpty())
             return ListWidgetDto.builder().pageSize(pageSize).pageIndex(pageIndex).count(0).build();

@@ -1,6 +1,7 @@
 package com.miro.assignments.widgets.repository;
 
 import com.miro.assignments.widgets.constant.GlobalConstant;
+import com.miro.assignments.widgets.domain.Area;
 import com.miro.assignments.widgets.domain.Widget;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -10,7 +11,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Created by Ghasem on 27/03/2021
@@ -108,4 +108,18 @@ public class InMemoryRepository implements WidgetRepository {
 
         return widgetList.subList(pageIndex * pageSize, Math.min(pageSize * (pageIndex + 1), widgetList.size()));
     }
-}
+
+    @Override
+    public List<Widget> findAllInArea(final Area area, int pageSize, int pageIndex) {
+        if (pageIndex * pageSize >= board.size())
+            return Collections.emptyList();
+
+        List<Widget> widgetList = board.values().stream()
+                .filter(w -> area.contains(w.getArea()))
+                .sorted(Comparator.comparingInt(Widget::getZ))
+                .collect(Collectors.toList());
+
+        return widgetList.subList(pageIndex * pageSize, Math.min(pageSize * (pageIndex + 1), widgetList.size()));
+    }
+
+ }

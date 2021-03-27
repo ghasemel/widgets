@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.awt.*;
 import java.util.UUID;
 
 /**
@@ -32,5 +33,12 @@ public class Widget {
     public Widget incrementZ() {
         z++;
         return this;
+    }
+
+    public Area getArea() {
+        return Area.builder()
+                .start(new Point(x, y))
+                .end(new Point(x + width, y + height))
+                .build();
     }
 }

@@ -1,7 +1,7 @@
 package com.miro.assignments.widgets.constant;
 
 /**
- * Created by taaelgh1 on 27/03/2021
+ * Created by Ghasem on 27/03/2021
  */
 public class GlobalConstant {
     private GlobalConstant() {

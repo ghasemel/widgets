@@ -20,12 +20,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by taaelgh1 on 27/03/2021
+ * Created by Ghasem on 27/03/2021
  */
 @Slf4j
 @RestControllerAdvice
@@ -58,7 +59,7 @@ public class DefinedTypeExceptionHandler {
 
         List<String> messages = new ArrayList<>();
         if (errors != null && errors.hasErrors()) {
-            for (FieldError error: errors.getFieldErrors()) {
+            for (FieldError error : errors.getFieldErrors()) {
                 messages.add(error.getDefaultMessage());
             }
         }
@@ -69,6 +70,21 @@ public class DefinedTypeExceptionHandler {
                 .timestamp(new Date())
                 .build();
     }
+
+    @ExceptionHandler({
+            ConstraintViolationException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionDto handleConstraintViolationException(ConstraintViolationException exc) {
+        log.error(ErrorConstant.INVALID_VALUE, exc);
+
+        return ExceptionDto.builder()
+                .message(exc.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .timestamp(new Date())
+                .build();
+    }
+
 
     @ExceptionHandler(WidgetNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

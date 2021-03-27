@@ -1,6 +1,7 @@
 package com.miro.assignments.widgets.service;
 
 import com.miro.assignments.widgets.domain.Widget;
+import com.miro.assignments.widgets.domain.Area;
 import com.miro.assignments.widgets.repository.WidgetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Created by taaelgh1 on 27/03/2021
+ * Created by Ghasem on 27/03/2021
  */
 @Service
 @Slf4j
@@ -126,6 +127,18 @@ public class BoardOperations {
 
             // retrieve
             return repository.findAll(pageSize, pageIndex - 1);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    public List<Widget> allWidgetInArea(Area area, int pageSize, int pageIndex) {
+        Lock readLock = lock.readLock();
+        try {
+            readLock.lock();
+
+            // retrieve
+            return repository.findAllInArea(area, pageSize, pageIndex - 1);
         } finally {
             readLock.unlock();
         }

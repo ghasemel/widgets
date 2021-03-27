@@ -1,5 +1,6 @@
 package com.miro.assignments.widgets.repository;
 
+import com.miro.assignments.widgets.domain.Area;
 import com.miro.assignments.widgets.domain.Widget;
 
 import java.util.List;
@@ -21,5 +22,6 @@ public interface WidgetRepository {
 
     List<Widget> getWidgetsWithZGreaterThanOrEqual(final int z);
 
-    List<Widget> findAll(int pageSize, int startIndex);
+    List<Widget> findAll(int pageSize, int pageIndex);
+    List<Widget> findAllInArea(Area area, int pageSize, int pageIndex);
 }
