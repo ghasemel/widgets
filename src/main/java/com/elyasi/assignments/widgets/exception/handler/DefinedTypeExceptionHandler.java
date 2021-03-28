@@ -1,7 +1,8 @@
 package com.elyasi.assignments.widgets.exception.handler;
 
 import com.elyasi.assignments.widgets.constant.ErrorConstant;
-import com.elyasi.assignments.widgets.model.ExceptionDto;
+import com.elyasi.assignments.widgets.dto.ExceptionDto;
+import com.elyasi.assignments.widgets.exception.defined.InvalidTypeException;
 import com.elyasi.assignments.widgets.exception.defined.WidgetNotFoundException;
 import com.elyasi.assignments.widgets.exception.defined.bad.BadRequestException;
 import com.elyasi.assignments.widgets.exception.defined.bad.InvalidRequestBodyException;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -95,5 +98,13 @@ public class DefinedTypeExceptionHandler {
                 .status(HttpStatus.NOT_FOUND.value())
                 .timestamp(new Date())
                 .build();
+    }
+
+    @ExceptionHandler(InvalidTypeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public final ExceptionDto handleInvalidTypeException(@NotNull InvalidTypeException exc) {
+        log.error(ErrorConstant.INVALID_DATA_TYPE, exc);
+
+        return ExceptionDto.builder().message(ErrorConstant.INTERNAL_ERROR).build();
     }
 }

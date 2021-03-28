@@ -1,7 +1,7 @@
-package com.elyasi.assignments.widgets.converter;
+package com.elyasi.assignments.widgets.web.converter;
 
 import com.elyasi.assignments.widgets.domain.Widget;
-import com.elyasi.assignments.widgets.model.WidgetDto;
+import com.elyasi.assignments.widgets.dto.WidgetDto;
 import org.springframework.core.convert.converter.Converter;
 
 /**
@@ -15,7 +15,7 @@ public class WidgetDtoToWidgetConverter implements Converter<WidgetDto, Widget> 
                 .id(dto.getId())
                 .x(dto.getX())
                 .y(dto.getY())
-                .z(dto.getZ() == null ? 0 : dto.getZ())
+                .z(dto.getZ())
                 .height(dto.getHeight())
                 .width(dto.getWidth())
                 .build();

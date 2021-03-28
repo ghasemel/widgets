@@ -1,4 +1,4 @@
-package com.elyasi.assignments.widgets.model;
+package com.elyasi.assignments.widgets.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -19,8 +19,6 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class WidgetDto implements Serializable {
     private static final long serialVersionUID = -2507554021211870226L;
-
-    @Setter(AccessLevel.PRIVATE)
     private UUID id;
 
     private int x;

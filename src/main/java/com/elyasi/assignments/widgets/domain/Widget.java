@@ -1,6 +1,5 @@
 package com.elyasi.assignments.widgets.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +25,7 @@ public class Widget {
 
     private int x;
     private int y;
-    private int z;
+    private Integer z;
 
     private int width;
     private int height;
@@ -36,7 +35,6 @@ public class Widget {
         return this;
     }
 
-    //@JsonIgnore
     public Area getArea() {
         return Area.builder()
                 .start(new Point(x, y))

@@ -1,10 +1,12 @@
-package com.elyasi.assignments.widgets.service.helper;
+package com.elyasi.assignments.widgets.service.sub;
 
 import com.elyasi.assignments.widgets.domain.Area;
+import com.elyasi.assignments.widgets.domain.Widget;
 import com.elyasi.assignments.widgets.exception.defined.WidgetNotFoundException;
 import com.elyasi.assignments.widgets.repository.WidgetRepository;
-import com.elyasi.assignments.widgets.domain.Widget;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +20,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * Created by Ghasem on 27/03/2021
  */
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
-public class BoardOperations {
+public class WidgetOperationsImpl implements WidgetOperations {
     private final WidgetRepository repository;
-    private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
+    @Setter(AccessLevel.PROTECTED)
+    private ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
+    @Override
     public Optional<Widget> readWidget(UUID id) {
         Lock readLock = lock.readLock();
         try {
@@ -38,7 +42,8 @@ public class BoardOperations {
         }
     }
 
-    public Widget addWidgetWithNoZIndex(Widget widget) {
+    @Override
+    public Widget addWidgetWithoutZIndex(Widget widget) {
         Lock writeLock = lock.writeLock();
         try {
             writeLock.lock();
@@ -67,6 +72,7 @@ public class BoardOperations {
         }
     }
 
+    @Override
     public Widget updateWidgetWithoutZIndex(Widget widget) {
         Lock writeLock = lock.writeLock();
         try {
@@ -85,6 +91,7 @@ public class BoardOperations {
         }
     }
 
+    @Override
     public Widget updateWidgetWithZIndex(Widget widget) {
         Lock writeLock = lock.writeLock();
         try {
@@ -116,6 +123,7 @@ public class BoardOperations {
         }
     }
 
+    @Override
     public void deleteWidget(UUID id) {
         Lock writeLock = lock.writeLock();
         try {
@@ -131,6 +139,7 @@ public class BoardOperations {
         }
     }
 
+    @Override
     public List<Widget> allWidget(int pageSize, int pageIndex) {
         Lock readLock = lock.readLock();
         try {
@@ -143,6 +152,7 @@ public class BoardOperations {
         }
     }
 
+    @Override
     public List<Widget> allWidgetInArea(Area area, int pageSize, int pageIndex) {
         Lock readLock = lock.readLock();
         try {

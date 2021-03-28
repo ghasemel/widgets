@@ -10,4 +10,5 @@ public class ErrorConstant {
     public static final String INTERNAL_ERROR = "internal error";
     public static final String INVALID_VALUE = "invalid value";
     public static final String NOT_FOUND = "not found";
+    public static final String INVALID_DATA_TYPE = "invalid data type";
 }

@@ -1,18 +1,19 @@
 package com.elyasi.assignments.widgets.service;
 
-import com.elyasi.assignments.widgets.model.ListWidgetDto;
-import com.elyasi.assignments.widgets.model.WidgetDto;
+import com.elyasi.assignments.widgets.domain.Area;
+import com.elyasi.assignments.widgets.domain.Widget;
+import com.elyasi.assignments.widgets.domain.WidgetList;
 
 import java.util.UUID;
 
 public interface WidgetService {
-    WidgetDto getById(UUID id);
+    Widget getById(UUID id);
 
-    WidgetDto create(WidgetDto widgetDto);
+    Widget create(Widget widgetDto);
 
-    WidgetDto update(UUID id, WidgetDto widgetDto);
+    Widget update(Widget widget);
 
     void deleteById(UUID id);
 
-    ListWidgetDto getList(String areaFilter, Integer pageSize, Integer startIndex);
+    WidgetList getList(Area area, Integer pageSize, Integer startIndex);
 }

@@ -1,4 +1,4 @@
-package com.elyasi.assignments.widgets.converter;
+package com.elyasi.assignments.widgets.web.converter;
 
 import com.elyasi.assignments.widgets.domain.Area;
 import org.springframework.core.convert.converter.Converter;

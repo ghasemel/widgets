@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Constraint(
         validatedBy = {AreaValidator.class}
 )
-public @interface Area {
+public @interface AreaTag {
     static final String MSG = "Invalid area format - acceptable format: X1:Y1,X2:Y2";
 
     String message() default MSG;

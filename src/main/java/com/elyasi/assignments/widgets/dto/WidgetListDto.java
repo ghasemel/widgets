@@ -1,4 +1,4 @@
-package com.elyasi.assignments.widgets.model;
+package com.elyasi.assignments.widgets.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -16,7 +16,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-public class ListWidgetDto {
+public class WidgetListDto {
     int pageSize;
     int pageIndex;
     @Setter(AccessLevel.PRIVATE)

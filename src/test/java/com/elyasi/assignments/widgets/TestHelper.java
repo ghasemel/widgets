@@ -1,13 +1,14 @@
 package com.elyasi.assignments.widgets;
 
-import com.elyasi.assignments.widgets.model.WidgetDto;
+import com.elyasi.assignments.widgets.domain.Widget;
+import com.elyasi.assignments.widgets.dto.WidgetDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Created by taaelgh1 on 27/03/2021
+ * Created by Ghasem on 27/03/2021
  */
 public class TestHelper {
     public static WidgetDto getWidgetDto() {
@@ -31,7 +32,16 @@ public class TestHelper {
                 .build();
     }
 
-
+    public static Widget getWidget() {
+        return Widget.builder()
+                .id(UUID.randomUUID())
+                .x(getRandomNum())
+                .y(getRandomNum())
+                .z(getRandomNum())
+                .width(getRandomNumGreaterThanZero())
+                .height(getRandomNumGreaterThanZero())
+                .build();
+    }
 
 
     public static int getRandomNum() {

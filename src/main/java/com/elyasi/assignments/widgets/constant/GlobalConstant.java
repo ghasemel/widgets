@@ -14,4 +14,6 @@ public class GlobalConstant {
 
 
     public static final String NULL_VALUE = "null";
+
+    public static final int DEFAULT_PAGE_INDEX = 1;
 }

@@ -3,20 +3,21 @@ package com.elyasi.assignments.widgets.web.controller;
 import com.elyasi.assignments.widgets.TestHelper;
 import com.elyasi.assignments.widgets.config.Config;
 import com.elyasi.assignments.widgets.constant.ControllerConstant;
-import com.elyasi.assignments.widgets.model.WidgetDto;
+import com.elyasi.assignments.widgets.domain.Widget;
+import com.elyasi.assignments.widgets.dto.WidgetDto;
 import com.elyasi.assignments.widgets.exception.defined.WidgetNotFoundException;
 import com.elyasi.assignments.widgets.exception.defined.bad.MutabilityException;
-import com.elyasi.assignments.widgets.validator.Area;
+import com.elyasi.assignments.widgets.repository.WidgetRepository;
+import com.elyasi.assignments.widgets.validator.AreaTag;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.elyasi.assignments.widgets.TestHelper.asJsonString;
@@ -28,23 +29,29 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@SpringBootTest
-@AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 abstract class WidgetControllerITest {
 
     @Autowired
-    private MockMvc mockMvc;
+    protected MockMvc mockMvc;
 
     @Autowired
-    private Config config;
+    protected Config config;
 
-    private static WidgetDto createdWidget;
+    @Autowired // to clean up before each test
+    protected WidgetRepository repository;
 
-    @AfterAll
-    static void afterAll() {
-        createdWidget = null;
+    private WidgetDto createdWidget;
+
+    @AfterEach
+    void tearDown() {
+        // clean up repository
+        List<Widget> all = repository.findAll(2000, 0);
+        all.forEach(w -> {
+            repository.delete(w.getId());
+        });
     }
+
 
     @Test
     @Order(1)
@@ -118,8 +125,7 @@ abstract class WidgetControllerITest {
     @Order(4)
     void givenExistId_thenGetById_assertOK() throws Exception {
         // given
-        if (createdWidget == null)
-            givenValidWidget_thenPost_assertCreated();
+        givenValidWidget_thenPost_assertCreated();
         UUID id = createdWidget.getId();
 
         // then
@@ -159,8 +165,7 @@ abstract class WidgetControllerITest {
     @Order(6)
     void givenExistWidget_thenUpdate_assertOK() throws Exception {
         // given
-        if (createdWidget == null)
-            givenValidWidget_thenPost_assertCreated();
+        givenValidWidget_thenPost_assertCreated();
 
         createdWidget.setWidth(TestHelper.getRandomNumGreaterThanZero());
         createdWidget.setHeight(TestHelper.getRandomNumGreaterThanZero());
@@ -190,15 +195,15 @@ abstract class WidgetControllerITest {
     @Order(7)
     void givenNotExistWidget_thenDelete_assertNotFound() throws Exception {
         // given
-        WidgetDto widgetDto = TestHelper.getWidgetDtoWithId();
+        UUID id = UUID.randomUUID();
 
         // then
-        mockMvc.perform(delete(WIDGET_ENDPOINT + "/{id}", widgetDto.getId())
+        mockMvc.perform(delete(WIDGET_ENDPOINT + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
         )
                 // assert
                 .andExpect(status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(new WidgetNotFoundException(widgetDto.getId()).getMessage()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(new WidgetNotFoundException(id).getMessage()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists());
     }
@@ -207,8 +212,7 @@ abstract class WidgetControllerITest {
     @Order(8)
     void givenExistWidget_thenDelete_assertOK() throws Exception {
         // given
-        if (createdWidget == null)
-            givenValidWidget_thenPost_assertCreated();
+        givenValidWidget_thenPost_assertCreated();
 
 
         // then
@@ -234,16 +238,16 @@ abstract class WidgetControllerITest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageSize").value(config.getDefaultPageSize()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageIndex").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.widgets").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.widgets").exists());
     }
 
     @Test
     @Order(10)
     void givenTwoWidgets_thenGetAll_assertListWithSortByZ() throws Exception {
         // given
-        if (createdWidget == null)
-            givenValidWidget_thenPost_assertCreated();
+        givenValidWidget_thenPost_assertCreated();
         WidgetDto widgetGreater = createdWidget;
+
 
         givenValidWidget_thenPost_assertCreated();
         WidgetDto widgetLessZ = createdWidget;
@@ -254,7 +258,6 @@ abstract class WidgetControllerITest {
             widgetLessZ = widgetGreater;
             widgetGreater = tmp;
         }
-
 
         // then
         mockMvc.perform(get(WIDGET_ENDPOINT)
@@ -295,7 +298,7 @@ abstract class WidgetControllerITest {
         )
                 // assert
                 .andExpect(status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("getWidgetsList.areaFilter: " + Area.MSG))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("getWidgetsList.areaFilter: " + AreaTag.MSG))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists());
     }
@@ -305,9 +308,7 @@ abstract class WidgetControllerITest {
     void givenAreaFilterOutsideWidgetsArea_thenGetAllWithFilter_assertCorrectResult() throws Exception {
         // given
         String areaFilter = "3123:4534,64645:8667";
-
-        if (createdWidget == null)
-            givenValidWidget_thenPost_assertCreated();
+        givenValidWidget_thenPost_assertCreated();
         givenValidWidget_thenPost_assertCreated();
 
 
@@ -321,7 +322,7 @@ abstract class WidgetControllerITest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageSize").value(config.getDefaultPageSize()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageIndex").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.widgets").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.widgets").isEmpty());
     }
 
     @Test
@@ -329,9 +330,7 @@ abstract class WidgetControllerITest {
     void givenAreaFilterContainsWidgetArea_thenGetAllWithFilter_assertCorrectResult() throws Exception {
         // given
         String areaFilter = "-2000:-2000,2000:2000";
-
-        if (createdWidget == null)
-            givenValidWidget_thenPost_assertCreated();
+        givenValidWidget_thenPost_assertCreated();
         givenValidWidget_thenPost_assertCreated();
 
 
@@ -345,7 +344,7 @@ abstract class WidgetControllerITest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageSize").value(config.getDefaultPageSize()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pageIndex").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.widgets").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.widgets").isNotEmpty());
     }
 
     @Test
@@ -355,8 +354,7 @@ abstract class WidgetControllerITest {
         int pageSize = 1;
         int pageIndex = 2;
 
-        if (createdWidget == null)
-            givenValidWidget_thenPost_assertCreated();
+        givenValidWidget_thenPost_assertCreated();
         WidgetDto widgetGreater = createdWidget;
 
         givenValidWidget_thenPost_assertCreated();
@@ -366,7 +364,6 @@ abstract class WidgetControllerITest {
         if (widgetGreater.getZ() < widgetLessZ.getZ()) {
             widgetGreater = widgetLessZ;
         }
-
 
         // then
         mockMvc.perform(get(WIDGET_ENDPOINT)

@@ -9,7 +9,7 @@ import javax.validation.ConstraintValidatorContext;
  * Created by Ghasem on 27/03/2021
  */
 @Slf4j
-public class AreaValidator implements ConstraintValidator<Area, String> {
+public class AreaValidator implements ConstraintValidator<AreaTag, String> {
     private static final String FORMAT = "-?[0-9]+:-?[0-9]+,-?[0-9]+:-?[0-9]+";
 
     @Override
@@ -23,7 +23,7 @@ public class AreaValidator implements ConstraintValidator<Area, String> {
     }
 
     @Override
-    public void initialize(Area constraintAnnotation) {
+    public void initialize(AreaTag constraintAnnotation) {
         // nothing!
     }
 }
