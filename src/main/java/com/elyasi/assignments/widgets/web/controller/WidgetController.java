@@ -1,7 +1,7 @@
-package com.elyasi.assignments.widgets.controller;
+package com.elyasi.assignments.widgets.web.controller;
 
-import com.elyasi.assignments.widgets.dto.ListWidgetDto;
-import com.elyasi.assignments.widgets.dto.WidgetDto;
+import com.elyasi.assignments.widgets.model.ListWidgetDto;
+import com.elyasi.assignments.widgets.model.WidgetDto;
 import com.elyasi.assignments.widgets.service.WidgetService;
 import com.elyasi.assignments.widgets.validator.Area;
 import io.swagger.annotations.*;

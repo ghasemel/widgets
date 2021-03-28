@@ -1,7 +1,7 @@
 package com.elyasi.assignments.widgets.exception.handler;
 
 import com.elyasi.assignments.widgets.constant.ErrorConstant;
-import com.elyasi.assignments.widgets.dto.ExceptionDto;
+import com.elyasi.assignments.widgets.model.ExceptionDto;
 import com.elyasi.assignments.widgets.exception.defined.WidgetNotFoundException;
 import com.elyasi.assignments.widgets.exception.defined.bad.BadRequestException;
 import com.elyasi.assignments.widgets.exception.defined.bad.InvalidRequestBodyException;

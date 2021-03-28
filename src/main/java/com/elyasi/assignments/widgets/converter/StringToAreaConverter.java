@@ -2,14 +2,12 @@ package com.elyasi.assignments.widgets.converter;
 
 import com.elyasi.assignments.widgets.domain.Area;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import java.awt.*;
 
 /**
  * Created by Ghasem on 27/03/2021
  */
-@Component
 public class StringToAreaConverter implements Converter<String, Area> {
 
     @Override

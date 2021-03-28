@@ -1,14 +1,12 @@
 package com.elyasi.assignments.widgets.converter;
 
 import com.elyasi.assignments.widgets.domain.Widget;
-import com.elyasi.assignments.widgets.dto.WidgetDto;
+import com.elyasi.assignments.widgets.model.WidgetDto;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by Ghasem on 27/03/2021
  */
-@Component
 public class WidgetDtoToWidgetConverter implements Converter<WidgetDto, Widget> {
 
     @Override

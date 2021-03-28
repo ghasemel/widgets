@@ -13,3 +13,16 @@ assuming that all clients work with the same board.
 
 ### Api Documentation
 [http://localhost:8080/miro/swagger-ui/](http://localhost:8080/miro/swagger-ui/)
+
+
+### How to build
+
+
+### How to run
+
+
+### Tools/Technologies
+
+
+### Github Link
+[https://github.com/ghasemel/widgets](https://github.com/ghasemel/widgets)

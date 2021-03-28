@@ -1,4 +1,4 @@
-package com.elyasi.assignments.widgets.service;
+package com.elyasi.assignments.widgets.service.helper;
 
 import com.elyasi.assignments.widgets.domain.Area;
 import com.elyasi.assignments.widgets.exception.defined.WidgetNotFoundException;

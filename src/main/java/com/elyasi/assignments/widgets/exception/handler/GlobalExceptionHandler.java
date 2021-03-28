@@ -1,7 +1,7 @@
 package com.elyasi.assignments.widgets.exception.handler;
 
 import com.elyasi.assignments.widgets.constant.ErrorConstant;
-import com.elyasi.assignments.widgets.dto.ExceptionDto;
+import com.elyasi.assignments.widgets.model.ExceptionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

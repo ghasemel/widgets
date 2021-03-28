@@ -1,6 +1,6 @@
 package com.elyasi.assignments.widgets;
 
-import com.elyasi.assignments.widgets.dto.WidgetDto;
+import com.elyasi.assignments.widgets.model.WidgetDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.UUID;
@@ -30,6 +30,9 @@ public class TestHelper {
                 .height(getRandomNumGreaterThanZero())
                 .build();
     }
+
+
+
 
     public static int getRandomNum() {
         return ThreadLocalRandom.current().nextInt(-100, 999);

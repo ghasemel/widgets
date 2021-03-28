@@ -1,9 +1,11 @@
-package com.elyasi.assignments.widgets.dto;
+package com.elyasi.assignments.widgets.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -17,6 +19,12 @@ import java.util.List;
 public class ListWidgetDto {
     int pageSize;
     int pageIndex;
+    @Setter(AccessLevel.PRIVATE)
     int count;
     List<WidgetDto> widgets;
+
+    public void setWidgets(List<WidgetDto> widgets) {
+        this.widgets = widgets;
+        count = widgets != null ? widgets.size() : 0;
+    }
 }

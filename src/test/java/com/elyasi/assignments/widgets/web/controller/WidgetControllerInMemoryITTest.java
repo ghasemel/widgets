@@ -1,4 +1,4 @@
-package com.elyasi.assignments.widgets.controller;
+package com.elyasi.assignments.widgets.web.controller;
 
 import com.elyasi.assignments.widgets.constant.GlobalConstant;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

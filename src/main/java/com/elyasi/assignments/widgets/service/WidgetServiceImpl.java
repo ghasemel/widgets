@@ -2,24 +2,26 @@ package com.elyasi.assignments.widgets.service;
 
 import com.elyasi.assignments.widgets.config.Config;
 import com.elyasi.assignments.widgets.constant.GlobalConstant;
-import com.elyasi.assignments.widgets.converter.StringToAreaConverter;
-import com.elyasi.assignments.widgets.converter.WidgetDtoToWidgetConverter;
-import com.elyasi.assignments.widgets.dto.ListWidgetDto;
+import com.elyasi.assignments.widgets.converter.WidgetToWidgetDtoConverter;
+import com.elyasi.assignments.widgets.domain.Area;
+import com.elyasi.assignments.widgets.model.ListWidgetDto;
 import com.elyasi.assignments.widgets.exception.defined.WidgetNotFoundException;
 import com.elyasi.assignments.widgets.exception.defined.bad.InvalidRequestBodyException;
 import com.elyasi.assignments.widgets.exception.defined.bad.MutabilityException;
-import com.elyasi.assignments.widgets.converter.WidgetToWidgetDtoConverter;
 import com.elyasi.assignments.widgets.domain.Widget;
-import com.elyasi.assignments.widgets.dto.WidgetDto;
+import com.elyasi.assignments.widgets.model.WidgetDto;
 import com.elyasi.assignments.widgets.exception.defined.bad.InvalidValueException;
+import com.elyasi.assignments.widgets.service.helper.BoardOperations;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by Ghasem on 27/03/2021
@@ -28,9 +30,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class WidgetServiceImpl implements WidgetService {
-    private final WidgetToWidgetDtoConverter toWidgetDtoConverter;
-    private final WidgetDtoToWidgetConverter toWidgetConverter;
-    private final StringToAreaConverter toAreaConverter;
+    private final ConversionService conversion;
     private final BoardOperations boardOperations;
     private final Config config;
 
@@ -47,7 +47,7 @@ public class WidgetServiceImpl implements WidgetService {
         if (widgetOptional.isEmpty())
             throw new WidgetNotFoundException(id);
 
-        WidgetDto widgetDto = toWidgetDtoConverter.convert(widgetOptional.get());
+        WidgetDto widgetDto = conversion.convert(widgetOptional.get(), WidgetDto.class);
         log.debug("getById(): retrieved widget: {}", widgetDto);
 
         return widgetDto;
@@ -65,7 +65,7 @@ public class WidgetServiceImpl implements WidgetService {
             throw new MutabilityException(WidgetDto.ID_NAME);
 
         // convert to widget
-        Widget widget = toWidgetConverter.convert(widgetDto);
+        Widget widget = conversion.convert(widgetDto, Widget.class);
         assert widget != null;
 
         // if z-index is null
@@ -76,7 +76,7 @@ public class WidgetServiceImpl implements WidgetService {
         }
 
         // convert to widgetDto
-        WidgetDto result = toWidgetDtoConverter.convert(widget);
+        WidgetDto result = conversion.convert(widget, WidgetDto.class);
         log.debug("create(): inserted widget: {}", result);
 
         return result;
@@ -93,7 +93,7 @@ public class WidgetServiceImpl implements WidgetService {
             throw new MutabilityException(WidgetDto.ID_NAME);
 
         // convert to widget
-        Widget widget = toWidgetConverter.convert(widgetDto);
+        Widget widget = conversion.convert(widgetDto, Widget.class);
         assert widget != null;
         widget.setId(id);
 
@@ -105,7 +105,7 @@ public class WidgetServiceImpl implements WidgetService {
         }
 
         // convert to widgetDto
-        WidgetDto result = toWidgetDtoConverter.convert(widget);
+        WidgetDto result = conversion.convert(widget, WidgetDto.class);
         log.debug("update(): updated widget: {}", result);
 
         return result;
@@ -142,16 +142,25 @@ public class WidgetServiceImpl implements WidgetService {
             widgets = boardOperations.allWidget(pageSize, pageIndex);
         } else {
             // retrieve by filter
-            widgets = boardOperations.allWidgetInArea(toAreaConverter.convert(areaFilter), pageSize, pageIndex);
+            widgets = boardOperations.allWidgetInArea(conversion.convert(areaFilter, Area.class), pageSize, pageIndex);
         }
 
+        // prepare result
+        ListWidgetDto listWidgetDto = ListWidgetDto.builder().pageSize(pageSize).pageIndex(pageIndex).build();
         if (widgets == null || widgets.isEmpty())
-            return ListWidgetDto.builder().pageSize(pageSize).pageIndex(pageIndex).count(0).build();
+            return listWidgetDto;
 
-        return ListWidgetDto.builder()
-                .pageSize(pageSize)
-                .pageIndex(pageIndex)
-                .count(widgets.size())
-                .widgets(toWidgetDtoConverter.convert(widgets)).build();
+        // convert widget list to widget dto list
+        listWidgetDto.setWidgets(getWidgetDtoList(widgets));
+
+        return listWidgetDto;
+    }
+
+    /** convert widget list to widgetDto list
+     * @param widgets list of widgets
+     * @return list of widgetDto
+     */
+    private List<WidgetDto> getWidgetDtoList(List<Widget> widgets) {
+        return widgets.stream().map(w -> conversion.convert(w, WidgetDto.class)).collect(Collectors.toList());
     }
 }

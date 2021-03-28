@@ -1,4 +1,4 @@
-package com.elyasi.assignments.widgets.dto;
+package com.elyasi.assignments.widgets.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
