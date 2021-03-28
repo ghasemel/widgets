@@ -11,11 +11,12 @@ import com.elyasi.assignments.widgets.exception.defined.bad.InvalidValueExceptio
 import com.elyasi.assignments.widgets.exception.defined.bad.MutabilityException;
 import com.elyasi.assignments.widgets.dto.WidgetDto;
 import com.elyasi.assignments.widgets.repository.WidgetRepository;
-import com.elyasi.assignments.widgets.service.sub.WidgetOperations;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,13 +25,14 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static com.elyasi.assignments.widgets.constant.GlobalConstant.DEFAULT_PAGE_INDEX;
+import static com.elyasi.assignments.widgets.constant.GlobalConstant.WIDGET_LOCK_BEAN;
 
 /**
  * Created by Ghasem on 27/03/2021
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class WidgetServiceImpl implements WidgetService {
 
     private final WidgetOperations widgetOperations;
@@ -144,17 +146,20 @@ public class WidgetServiceImpl implements WidgetService {
                 .build();
     }
 
-
+    // ****************************************************************************
+    // ***************************** Widget Operations ****************************
+    // ****************************************************************************
     @Slf4j
-    @Service
-    @RequiredArgsConstructor
+    @Component
     protected static class WidgetOperations {
         private final WidgetRepository repository;
+        private final ReadWriteLock lock;
 
-        @Setter(AccessLevel.PROTECTED)
-        private ReadWriteLock lock = new ReentrantReadWriteLock(true);
+        public WidgetOperations(WidgetRepository repository, @Qualifier(WIDGET_LOCK_BEAN) ReadWriteLock lock) {
+            this.repository = repository;
+            this.lock = lock;
+        }
 
-        //@Override
         public Optional<Widget> readWidget(UUID id) {
             Lock readLock = lock.readLock();
             try {
@@ -166,8 +171,7 @@ public class WidgetServiceImpl implements WidgetService {
                 readLock.unlock();
             }
         }
-
-        //@Override
+        
         public Widget addWidgetWithoutZIndex(Widget widget) {
             Lock writeLock = lock.writeLock();
             try {
@@ -196,8 +200,7 @@ public class WidgetServiceImpl implements WidgetService {
                 writeLock.unlock();
             }
         }
-
-        //@Override
+        
         public Widget updateWidgetWithoutZIndex(Widget widget) {
             Lock writeLock = lock.writeLock();
             try {
@@ -215,8 +218,7 @@ public class WidgetServiceImpl implements WidgetService {
                 writeLock.unlock();
             }
         }
-
-        //@Override
+        
         public Widget updateWidgetWithZIndex(Widget widget) {
             Lock writeLock = lock.writeLock();
             try {
@@ -247,8 +249,7 @@ public class WidgetServiceImpl implements WidgetService {
                 widgetList.forEach(w -> repository.update(w.incrementZ()));
             }
         }
-
-        //@Override
+        
         public void deleteWidget(UUID id) {
             Lock writeLock = lock.writeLock();
             try {
@@ -264,7 +265,7 @@ public class WidgetServiceImpl implements WidgetService {
             }
         }
 
-        //@Override
+        
         public List<Widget> allWidget(int pageSize, int pageIndex) {
             Lock readLock = lock.readLock();
             try {
@@ -276,8 +277,7 @@ public class WidgetServiceImpl implements WidgetService {
                 readLock.unlock();
             }
         }
-
-        //@Override
+        
         public List<Widget> allWidgetInArea(Area area, int pageSize, int pageIndex) {
             Lock readLock = lock.readLock();
             try {
@@ -290,5 +290,4 @@ public class WidgetServiceImpl implements WidgetService {
             }
         }
     }
-
 }

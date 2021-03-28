@@ -11,7 +11,6 @@ import com.elyasi.assignments.widgets.exception.defined.bad.InvalidRequestBodyEx
 import com.elyasi.assignments.widgets.exception.defined.bad.InvalidValueException;
 import com.elyasi.assignments.widgets.dto.WidgetDto;
 import com.elyasi.assignments.widgets.exception.defined.bad.MutabilityException;
-import com.elyasi.assignments.widgets.service.sub.WidgetOperations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.*;
 class WidgetServiceImplTest {
 
     @Mock
-    private WidgetOperations operations;
+    private WidgetServiceImpl.WidgetOperations operations;
 
     @Mock
     private Config config;
@@ -38,7 +37,7 @@ class WidgetServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        //widgetService = new WidgetServiceImpl(operations, config);
+        widgetService = new WidgetServiceImpl(operations, config);
     }
 
     // region get **********************************************************
