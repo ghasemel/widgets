@@ -31,14 +31,16 @@ public class Widget {
     private int height;
 
     public Widget incrementZ() {
-        z++;
+        if (z != null)
+            z++;
         return this;
     }
 
-    public Area getArea() {
-        return Area.builder()
-                .start(new Point(x, y))
-                .end(new Point(x + width, y + height))
-                .build();
+    public Area area() {
+        return new Area(new Point(x, y), new Point(x + width, y + height));
+    }
+
+    public static void test() {
+
     }
 }

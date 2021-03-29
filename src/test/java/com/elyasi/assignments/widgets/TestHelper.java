@@ -33,11 +33,15 @@ public class TestHelper {
     }
 
     public static Widget getWidget() {
+        return getWidget(getRandomNum());
+    }
+
+    public static Widget getWidget(Integer z) {
         return Widget.builder()
                 .id(UUID.randomUUID())
                 .x(getRandomNum())
                 .y(getRandomNum())
-                .z(getRandomNum())
+                .z(z)
                 .width(getRandomNumGreaterThanZero())
                 .height(getRandomNumGreaterThanZero())
                 .build();

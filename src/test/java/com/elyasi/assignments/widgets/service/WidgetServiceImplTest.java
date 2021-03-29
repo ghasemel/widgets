@@ -420,7 +420,7 @@ class WidgetServiceImplTest {
     @Test
     void givenAreaNotNullAndPageSizeNotNullAndPageIndexNotNull_thenGetList_assertCallToRightOperation() {
         // given
-        final Area area = Area.builder().build();
+        final Area area = new Area();
         final int pageSize = 20;
         final int pageIndex = 5;
 

@@ -178,7 +178,7 @@ public class WidgetServiceImpl implements WidgetService {
                 writeLock.lock();
 
                 // retrieve max-z
-                widget.setZ(repository.getMaxZ());
+                widget.setZ(repository.getMaxZ() + 1);
 
                 // insert widget
                 return repository.insert(widget);
@@ -210,7 +210,7 @@ public class WidgetServiceImpl implements WidgetService {
                     throw new WidgetNotFoundException(widget.getId());
 
                 // retrieve max-z
-                widget.setZ(repository.getMaxZ());
+                widget.setZ(repository.getMaxZ() + 1);
 
                 // insert widget
                 return repository.update(widget);

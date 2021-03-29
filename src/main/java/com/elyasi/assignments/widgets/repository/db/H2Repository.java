@@ -41,11 +41,11 @@ public interface H2Repository extends CrudRepository<Widget, UUID> {
 
 
 
-    @Query(value = "from Widget widget " +
+    @Query(value = "from Widget sub " +
             "where " +
-            "widget.x >= :x1 and widget.y >= :y1 and " +
-            "widget.x + widget.width <= :x2 and widget.y + widget.height <= :y2 " +
-            "order by widget.z")
+            "(:x1 <= sub.x and :y1 <= sub.y) and " +
+            "(:x2 >= sub.x + sub.width and :y2 >= sub.y + sub.height)" +
+            "order by sub.z")
     Page<Widget> findAllInAreaWithPagination(Pageable pageable,
                                              @Param("x1") int x1,
                                              @Param("y1") int y1,

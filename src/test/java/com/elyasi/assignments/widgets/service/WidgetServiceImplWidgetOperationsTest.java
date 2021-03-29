@@ -24,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 import static com.elyasi.assignments.widgets.constant.GlobalConstant.DEFAULT_PAGE_INDEX;
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,8 +71,7 @@ class WidgetServiceImplWidgetOperationsTest {
     @Test
     void givenWidgetWithoutZ_thenAddWidgetWithoutZIndex_assertLockAndResult() {
         // given
-        Widget widget = TestHelper.getWidget();
-        widget.setZ(null);
+        Widget widget = TestHelper.getWidget(null);
         int maxZ = 100;
 
         // when
@@ -83,7 +83,7 @@ class WidgetServiceImplWidgetOperationsTest {
 
         // assert
         assertNotNull(resultWidget);
-        assertEquals(maxZ, resultWidget.getZ());
+        assertEquals(maxZ + 1, resultWidget.getZ());
 
         // verify
         verify(lockSpy).writeLock();
@@ -94,30 +94,38 @@ class WidgetServiceImplWidgetOperationsTest {
     @Test
     void givenWidgetWithExistZ_thenAddWidgetWithZIndex_assertLockAndResultAndShift() {
         // given
-        final Widget widget = TestHelper.getWidget();
+        final int EXIST_Z = 20;
+        final int Z2 = 21;
+        final int Z3 = 22;
+        final Widget widget = TestHelper.getWidget(EXIST_Z);
 
-        final List<Widget> widgetsWithEqualOrHigherZ = new ArrayList<>();
-        widgetsWithEqualOrHigherZ.add(TestHelper.getWidget());
-        widgetsWithEqualOrHigherZ.add(TestHelper.getWidget());
-        widgetsWithEqualOrHigherZ.add(TestHelper.getWidget());
+        final List<Widget> widgets = new ArrayList<>();
+        widgets.add(TestHelper.getWidget(EXIST_Z));
+        widgets.add(TestHelper.getWidget(Z2));
+        widgets.add(TestHelper.getWidget(Z3));
 
         // when
         when(repository.insert(widget)).thenReturn(widget);
-        when(repository.isZExist(widget.getZ())).thenReturn(true); // means shift should happen
-        when(repository.getWidgetsWithZGreaterThanOrEqual(widget.getZ())).thenReturn(widgetsWithEqualOrHigherZ);
-        when(repository.update(any(Widget.class))).thenReturn(null); // result doesn't matter
+        when(repository.isZExist(EXIST_Z)).thenReturn(true); // means shift should happen
+        when(repository.getWidgetsWithZGreaterThanOrEqual(EXIST_Z)).thenReturn(widgets);
+        when(repository.update(widgets.get(0))).thenReturn(widgets.get(0)); // EXIST_Z
+        when(repository.update(widgets.get(1))).thenReturn(widgets.get(1)); // Z2
+        when(repository.update(widgets.get(2))).thenReturn(widgets.get(2)); // Z3
 
         // then
         Widget resultWidget = widgetOperations.addWidgetWithZIndex(widget);
 
         // assert
         assertNotNull(resultWidget);
+        assertEquals(EXIST_Z + 1, widgets.get(0).getZ());
+        assertEquals(Z2 + 1, widgets.get(1).getZ());
+        assertEquals(Z3 + 1, widgets.get(2).getZ());
 
         // verify
         verify(lockSpy).writeLock();
         verify(repository).isZExist(widget.getZ());
         verify(repository).getWidgetsWithZGreaterThanOrEqual(widget.getZ());
-        verify(repository, times(widgetsWithEqualOrHigherZ.size())).update(any(Widget.class));
+        verify(repository, times(widgets.size())).update(any(Widget.class));
         verify(repository).insert(widget);
     }
 
@@ -172,8 +180,7 @@ class WidgetServiceImplWidgetOperationsTest {
     @Test
     void givenWidgetWithoutZ_thenUpdateWidgetWithoutZIndex_assertLockAndResult() {
         // given
-        Widget widget = TestHelper.getWidget();
-        widget.setZ(null);
+        Widget widget = TestHelper.getWidget(null);
         int maxZ = 100;
 
         // when
@@ -186,7 +193,7 @@ class WidgetServiceImplWidgetOperationsTest {
 
         // assert
         assertNotNull(resultWidget);
-        assertEquals(maxZ, resultWidget.getZ());
+        assertEquals(maxZ + 1, resultWidget.getZ());
 
         // verify
         verify(lockSpy).writeLock();
@@ -220,32 +227,40 @@ class WidgetServiceImplWidgetOperationsTest {
     @Test
     void givenWidgetWithExistZ_thenUpdateWidgetWithZIndex_assertLockAndResultAndShift() {
         // given
-        final Widget widget = TestHelper.getWidget();
+        final int EXIST_Z = 20;
+        final int Z2 = 21;
+        final int Z3 = 22;
+        final Widget toBeUpdated = TestHelper.getWidget(EXIST_Z);
 
-        final List<Widget> widgetsWithEqualOrHigherZ = new ArrayList<>();
-        widgetsWithEqualOrHigherZ.add(TestHelper.getWidget());
-        widgetsWithEqualOrHigherZ.add(TestHelper.getWidget());
-        widgetsWithEqualOrHigherZ.add(TestHelper.getWidget());
+        final List<Widget> widgets = new ArrayList<>();
+        widgets.add(TestHelper.getWidget(EXIST_Z));
+        widgets.add(TestHelper.getWidget(Z2));
+        widgets.add(TestHelper.getWidget(Z3));
 
         // when
-        when(repository.existsById(widget.getId())).thenReturn(true);
-        when(repository.isZExist(widget.getZ())).thenReturn(true); // means shift should happen
-        when(repository.getWidgetsWithZGreaterThanOrEqual(widget.getZ())).thenReturn(widgetsWithEqualOrHigherZ);
-        when(repository.update(any(Widget.class))).thenReturn(widget); // result doesn't matter
-
+        when(repository.existsById(toBeUpdated.getId())).thenReturn(true);
+        when(repository.isZExist(EXIST_Z)).thenReturn(true); // means shift should happen
+        when(repository.getWidgetsWithZGreaterThanOrEqual(EXIST_Z)).thenReturn(widgets);
+        when(repository.update(toBeUpdated)).thenReturn(toBeUpdated); // EXIST_Z
+        when(repository.update(widgets.get(0))).thenReturn(widgets.get(0)); // EXIST_Z
+        when(repository.update(widgets.get(1))).thenReturn(widgets.get(1)); // Z2
+        when(repository.update(widgets.get(2))).thenReturn(widgets.get(2)); // Z3
 
         // then
-        Widget resultWidget = widgetOperations.updateWidgetWithZIndex(widget);
+        Widget resultWidget = widgetOperations.updateWidgetWithZIndex(toBeUpdated);
 
         // assert
         assertNotNull(resultWidget);
+        assertEquals(EXIST_Z + 1, widgets.get(0).getZ());
+        assertEquals(Z2 + 1, widgets.get(1).getZ());
+        assertEquals(Z3 + 1, widgets.get(2).getZ());
 
         // verify
         verify(lockSpy).writeLock();
-        verify(repository).existsById(widget.getId());
-        verify(repository).isZExist(widget.getZ());
-        verify(repository).getWidgetsWithZGreaterThanOrEqual(widget.getZ());
-        verify(repository, times(widgetsWithEqualOrHigherZ.size() + 1)).update(any(Widget.class));
+        verify(repository).existsById(toBeUpdated.getId());
+        verify(repository).isZExist(toBeUpdated.getZ());
+        verify(repository).getWidgetsWithZGreaterThanOrEqual(toBeUpdated.getZ());
+        verify(repository, times(widgets.size() + 1)).update(any(Widget.class));
     }
 
     @Test
@@ -350,7 +365,7 @@ class WidgetServiceImplWidgetOperationsTest {
         // given
         final int pageSize = 20;
         final int pageIndex = 5;
-        final Area area = Area.builder().build();
+        final Area area = new Area();
 
         final List<Widget> widgets = new ArrayList<>();
         widgets.add(TestHelper.getWidget());

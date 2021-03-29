@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class InMemoryRepository implements WidgetRepository {
     private final ConcurrentMap<UUID, Widget> board = new ConcurrentHashMap<>();
-    private int maxZIndex = Integer.MIN_VALUE;
 
     @Override
     public Optional<Widget> findById(UUID id) {
@@ -31,10 +30,6 @@ public class InMemoryRepository implements WidgetRepository {
     public Widget insert(Widget widget) {
         widget.setId(UUID.randomUUID());
         board.put(widget.getId(), widget);
-
-        // update max-z
-        if (maxZIndex < widget.getZ())
-            maxZIndex = widget.getZ();
 
         return widget;
     }
@@ -49,10 +44,6 @@ public class InMemoryRepository implements WidgetRepository {
         board.remove(widget.getId());
         board.put(widget.getId(), widget);
 
-        // update max-z
-        if (maxZIndex < widget.getZ())
-            maxZIndex = widget.getZ();
-
         return widget;
     }
 
@@ -63,7 +54,10 @@ public class InMemoryRepository implements WidgetRepository {
 
     @Override
     public int getMaxZ() {
-        return maxZIndex;
+        return board.values().stream()
+                .max(Comparator.comparingInt(Widget::getZ))
+                .orElse(Widget.builder().z(0).build())
+                .getZ();
     }
 
     @Override
@@ -103,7 +97,7 @@ public class InMemoryRepository implements WidgetRepository {
             return Collections.emptyList();
 
         List<Widget> widgetList = board.values().stream()
-                .filter(w -> area.contains(w.getArea()))
+                .filter(w -> area.contains(w.area()))
                 .sorted(Comparator.comparingInt(Widget::getZ))
                 .collect(Collectors.toList());
 

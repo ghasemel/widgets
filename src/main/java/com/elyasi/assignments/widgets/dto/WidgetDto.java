@@ -19,8 +19,8 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class WidgetDto implements Serializable {
     private static final long serialVersionUID = -2507554021211870226L;
-    private UUID id;
 
+    private UUID id;
     private int x;
     private int y;
     private Integer z;
