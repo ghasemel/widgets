@@ -6,7 +6,7 @@ import com.elyasi.assignments.widgets.constant.ControllerConstant;
 import com.elyasi.assignments.widgets.domain.Widget;
 import com.elyasi.assignments.widgets.dto.WidgetDto;
 import com.elyasi.assignments.widgets.exception.defined.WidgetNotFoundException;
-import com.elyasi.assignments.widgets.exception.defined.bad.MutabilityException;
+import com.elyasi.assignments.widgets.exception.defined.badRequest.MutabilityException;
 import com.elyasi.assignments.widgets.repository.WidgetRepository;
 import com.elyasi.assignments.widgets.validator.AreaTag;
 import org.junit.jupiter.api.*;

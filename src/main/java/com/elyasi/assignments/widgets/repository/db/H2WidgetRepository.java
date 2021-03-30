@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @Profile(GlobalConstant.PROFILE_H2)
 @Repository
-public interface H2Repository extends CrudRepository<Widget, UUID> {
+public interface H2WidgetRepository extends CrudRepository<Widget, UUID> {
 
     @Query("select max(z) from Widget")
     int findMaxZ();

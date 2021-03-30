@@ -1,6 +1,7 @@
 package com.elyasi.assignments.widgets.repository;
 
 import com.elyasi.assignments.widgets.TestHelper;
+import com.elyasi.assignments.widgets.domain.Area;
 import com.elyasi.assignments.widgets.domain.Widget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,14 +11,17 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-class InMemoryRepositoryTest {
+class InMemoryWidgetRepositoryImplTest {
 
-    private InMemoryRepository repository;
+    private InMemoryWidgetRepositoryImpl repository;
 
     @BeforeEach
     void setUp() {
-        repository = new InMemoryRepository();
+        repository = new InMemoryWidgetRepositoryImpl();
     }
 
     @Test
@@ -170,7 +174,7 @@ class InMemoryRepositoryTest {
     }
 
     @Test
-    void givenThreeWidgetsNotInRow_thenGetWidgetsWithZGreaterThanOrEqual_assertEmptyResult() {
+    void givenThreeWidgets_whenNotInRow_thenGetWidgetsWithZGreaterThanOrEqual_assertEmptyResult() {
         // given
         int Z1 = 10;
         int Z2 = 20;
@@ -189,7 +193,7 @@ class InMemoryRepositoryTest {
     }
 
     @Test
-    void givenThreeWidgetsInRow_thenGetWidgetsWithZGreaterThanOrEqual_assertEmptyResult() {
+    void givenThreeWidgets_whenInRow_thenGetWidgetsWithZGreaterThanOrEqual_assertResultForFilteredWidgets() {
         // given
         int Z1 = 10;
         int Z2 = 20;
@@ -208,4 +212,139 @@ class InMemoryRepositoryTest {
         assertEquals(Z2, widgets.get(0).getZ());
         assertEquals(Z3, widgets.get(1).getZ());
     }
+
+    // region findAll
+    @Test
+    void givenPageSizeAndPageIndex_whenCountLessThanPageSizeAndPageIndex_thenFindAll_assertEmptyResult() {
+        // given
+        int pageIndex = 2;
+        int pageSize = 10;
+        repository.insert(TestHelper.getWidget());
+        repository.insert(TestHelper.getWidget());
+        repository.insert(TestHelper.getWidget());
+
+        // then
+        List<Widget> widgets = repository.findAll(pageSize, pageIndex);
+
+        // assert
+        assertNotNull(widgets);
+        assertTrue(widgets.isEmpty());
+    }
+
+    @Test
+    void givenPageSizeAndPageIndex_thenFindAll_assertResultAndSorting() {
+        // given
+        int pageIndex = 0;
+        int pageSize = 10;
+        int Z1 = 10;
+        int Z2 = 20;
+        int Z3 = 30;
+        repository.insert(TestHelper.getWidget(Z3));
+        repository.insert(TestHelper.getWidget(Z1));
+        repository.insert(TestHelper.getWidget(Z2));
+
+        // then
+        List<Widget> widgets = repository.findAll(pageSize, pageIndex);
+
+        // assert
+        assertNotNull(widgets);
+        assertEquals(3, widgets.size());
+        assertEquals(Z1, widgets.get(0).getZ());
+        assertEquals(Z2, widgets.get(1).getZ());
+        assertEquals(Z3, widgets.get(2).getZ());
+    }
+
+    @Test
+    void givenPageIndexForOnSecondPage_thenFindAll_assertResultAndSortingAndPaging() {
+        // given
+        int pageIndex = 1;
+        int pageSize = 2;
+        int Z1 = 10;
+        int Z2 = 20;
+        int Z3 = 30;
+        int Z4 = 15;
+        repository.insert(TestHelper.getWidget(Z3));
+        repository.insert(TestHelper.getWidget(Z1));
+        repository.insert(TestHelper.getWidget(Z2));
+        repository.insert(TestHelper.getWidget(Z4));
+
+        // then
+        List<Widget> widgets = repository.findAll(pageSize, pageIndex);
+
+        // assert
+        assertNotNull(widgets);
+        assertEquals(2, widgets.size());
+        assertEquals(Z2, widgets.get(0).getZ());
+        assertEquals(Z3, widgets.get(1).getZ());
+    }
+    // endregion findAll
+
+    // region findAllInArea
+    @Test
+    void givenPageSizeAndPageIndexGreaterThanExistWidgets_thenFindAllInArea_assertEmptyResult() {
+        // given
+        int pageIndex = 2;
+        int pageSize = 10;
+        Area area = mock(Area.class);
+        repository.insert(TestHelper.getWidget());
+        repository.insert(TestHelper.getWidget());
+        repository.insert(TestHelper.getWidget());
+
+        // then
+        List<Widget> widgets = repository.findAllInArea(area, pageSize, pageIndex);
+
+        // assert
+        assertNotNull(widgets);
+        assertTrue(widgets.isEmpty());
+    }
+
+    @Test
+    void givenAreaAndPageSizeAndPageIndex_whenDoesNotContainWidget_thenFindAllInArea_assertEmptyResult() {
+        // given
+        Area area = mock(Area.class);
+        int pageIndex = 0;
+        int pageSize = 10;
+        repository.insert(TestHelper.getWidget());
+        repository.insert(TestHelper.getWidget());
+        repository.insert(TestHelper.getWidget());
+
+        // when
+        when(area.contains(any(Area.class))).thenReturn(false);
+
+        // then
+        List<Widget> widgets = repository.findAllInArea(area, pageSize, pageIndex);
+
+        // assert
+        assertNotNull(widgets);
+        assertTrue(widgets.isEmpty());
+    }
+
+    @Test
+    void givenAreaAndPageSizeAndPageIndexInSecondPage_whenContainsWidgets_thenFindAllInArea_assertResultAndSortingAndAreaContains() {
+        // given
+        Area area = mock(Area.class);
+        int pageIndex = 1;
+        int pageSize = 2;
+        int Z1 = 10;
+        int Z2 = 20;
+        int Z3 = 30;
+        int Z4 = 15;
+        repository.insert(TestHelper.getWidget(Z3));
+        repository.insert(TestHelper.getWidget(Z1));
+        repository.insert(TestHelper.getWidget(Z2));
+        repository.insert(TestHelper.getWidget(Z4));
+
+        // when
+        when(area.contains(any(Area.class))).thenReturn(true);
+
+        // then
+        List<Widget> widgets = repository.findAllInArea(area, pageSize, pageIndex);
+
+        // assert
+        assertNotNull(widgets);
+        assertEquals(2, widgets.size()); // it is on page 2
+        assertEquals(Z2, widgets.get(0).getZ());
+        assertEquals(Z3, widgets.get(1).getZ());
+    }
+    // endregion findAllInArea
 }

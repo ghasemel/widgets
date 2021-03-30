@@ -1,4 +1,4 @@
-package com.elyasi.assignments.widgets.exception.defined.bad;
+package com.elyasi.assignments.widgets.exception.defined.badRequest;
 
 /**
  * Created by Ghasem on 27/03/2021

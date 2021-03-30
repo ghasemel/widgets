@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Profile(GlobalConstant.PROFILE_IN_MEMORY)
 @Component
 @Slf4j
-public class InMemoryRepository implements WidgetRepository {
+public class InMemoryWidgetRepositoryImpl implements WidgetRepository {
     private final ConcurrentMap<UUID, Widget> board = new ConcurrentHashMap<>();
 
     @Override
@@ -88,7 +88,7 @@ public class InMemoryRepository implements WidgetRepository {
                 .sorted(Comparator.comparingInt(Widget::getZ))
                 .collect(Collectors.toList());
 
-        return widgetList.subList(pageIndex * pageSize, Math.min(pageSize * (pageIndex + 1), widgetList.size()));
+        return paginateList(pageSize, pageIndex, widgetList);
     }
 
     @Override
@@ -101,7 +101,10 @@ public class InMemoryRepository implements WidgetRepository {
                 .sorted(Comparator.comparingInt(Widget::getZ))
                 .collect(Collectors.toList());
 
-        return widgetList.subList(pageIndex * pageSize, Math.min(pageSize * (pageIndex + 1), widgetList.size()));
+        return paginateList(pageSize, pageIndex, widgetList);
     }
 
+    private List<Widget> paginateList(int pageSize, int pageIndex, List<Widget> widgetList) {
+        return widgetList.subList(pageIndex * pageSize, Math.min(pageSize * (pageIndex + 1), widgetList.size()));
+    }
 }

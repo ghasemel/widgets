@@ -25,7 +25,21 @@ public interface WidgetRepository {
 
     List<Widget> getWidgetsWithZGreaterThanOrEqual(final int z);
 
+    /**
+     * find all widgets considering pageSize and pageIndex
+     * @param pageSize
+     * @param pageIndex zero-based index
+     * @return
+     */
     List<Widget> findAll(int pageSize, int pageIndex);
+
+    /**
+     * find all widgets considering pageSize and pageIndex
+     * @param area
+     * @param pageSize
+     * @param pageIndex zero-based index
+     * @return
+     */
     List<Widget> findAllInArea(Area area, int pageSize, int pageIndex);
 
 

@@ -1,32 +1,19 @@
 package com.elyasi.assignments.widgets.service;
 
 import com.elyasi.assignments.widgets.TestHelper;
-import com.elyasi.assignments.widgets.config.Config;
-import com.elyasi.assignments.widgets.config.WidgetConfig;
-import com.elyasi.assignments.widgets.constant.GlobalConstant;
 import com.elyasi.assignments.widgets.domain.Area;
 import com.elyasi.assignments.widgets.domain.Widget;
-import com.elyasi.assignments.widgets.domain.WidgetList;
-import com.elyasi.assignments.widgets.dto.WidgetDto;
 import com.elyasi.assignments.widgets.exception.defined.WidgetNotFoundException;
-import com.elyasi.assignments.widgets.exception.defined.bad.InvalidRequestBodyException;
-import com.elyasi.assignments.widgets.exception.defined.bad.InvalidValueException;
-import com.elyasi.assignments.widgets.exception.defined.bad.MutabilityException;
 import com.elyasi.assignments.widgets.repository.WidgetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
-import static com.elyasi.assignments.widgets.constant.GlobalConstant.DEFAULT_PAGE_INDEX;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
