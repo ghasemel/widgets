@@ -1,0 +1,174 @@
+{
+	"info": {
+		"_postman_id": "81b8e786-fa40-4103-ad3f-27ac06ca3e7f",
+		"name": "widget",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/app/widget/21f7ab8f-2414-436c-94cf-fe32e4d8fe4e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"app",
+						"widget",
+						"21f7ab8f-2414-436c-94cf-fe32e4d8fe4e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all filter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/app/widget?pageIndex=1&pageSize=2&areaFilter=-50:-20,500:500",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"app",
+						"widget"
+					],
+					"query": [
+						{
+							"key": "pageIndex",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "2"
+						},
+						{
+							"key": "areaFilter",
+							"value": "-50:-20,500:500"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/app/widget?pageIndex=1&pageSize=3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"app",
+						"widget"
+					],
+					"query": [
+						{
+							"key": "pageIndex",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"x\": {{$randomInt}},\n    \"y\": {{$randomInt}},\n    \"z\": {{$randomInt}},\n    \"width\": 50,\n    \"height\": 70\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/app/widget",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"app",
+						"widget"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"x\": {{$randomInt}},\n    \"y\": {{$randomInt}},\n    \"z\": {{$randomInt}},\n    \"width\": 50,\n    \"height\": 70\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/app/widget/21f7ab8f-2414-436c-94cf-fe32e4d8fe4e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"app",
+						"widget",
+						"21f7ab8f-2414-436c-94cf-fe32e4d8fe4e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/app/widget/21f7ab8f-2414-436c-94cf-fe32e4d8fe4e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"app",
+						"widget",
+						"21f7ab8f-2414-436c-94cf-fe32e4d8fe4e"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

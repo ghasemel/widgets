@@ -14,10 +14,12 @@ assuming that all clients work with the same board.
 ### API Documentation
 [http://localhost:8080/app/swagger-ui/](http://localhost:8080/app/swagger-ui/)
 
+### Sample Requests
+Sample [postman](https://www.postman.com/downloads/) collection can be found here:
+[widget.postman_collection.json](widget.postman_collection.json)
 
 ### How to build
 `mvn clean install`
-
 
 ### How to check code coverage
 1. `mvn clean test`
@@ -46,6 +48,7 @@ These profiles can be specified in line 3 in application.properties file.
 3. spring.profiles.active=dev,h2
 4. spring.profiles.active=dev,inMeory
 ```
+
 ### Tools/Technologies
 * JDK 11
 * Spring
